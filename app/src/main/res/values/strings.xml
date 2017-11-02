@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">NightOut-final</string>
+    <string name="facebook_app_id">1279636605417523</string>
+    <string name="fb_login_protocol_scheme">fb1279636605417523</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+</resources>
