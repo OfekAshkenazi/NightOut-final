@@ -31,6 +31,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.PlaceDetectionClient;
+import com.google.android.gms.location.places.PlaceFilter;
 import com.google.android.gms.location.places.Places;
 
 import org.json.JSONObject;
@@ -38,9 +39,15 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import Entities.MyPlace;
+import GooglePlacesClasses.OnGooglePlacesLoaded;
+import GooglePlacesClasses.PlacesDAL;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, OnGooglePlacesLoaded {
     Toolbar toolbar;
     AccessToken currentToken;
     private TextView nameTV;
@@ -54,7 +61,18 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         setupDrawer();
         facebookTokenInit();
+        PlaceFilter filter=new PlaceFilter();
+        loadGooglePlaces();
 
+    }
+
+    private void loadGooglePlaces() {
+        HashMap<String,String> requestParam=new HashMap<>();
+        requestParam.put("radius","10000");
+        requestParam.put("type","bar");
+        PlacesDAL dal=new PlacesDAL();
+        OnGooglePlacesLoaded event=this;
+        dal.setNearbyPlaces(32.518612,35.427379,requestParam,event);
     }
 
     public void setGoogleApiClient() {
@@ -65,7 +83,6 @@ public class MainActivity extends AppCompatActivity
                 .build();
         GeoDataClient geoDataClient=Places.getGeoDataClient(this,null);
         PlaceDetectionClient placeDetectionClient= Places.getPlaceDetectionClient(this,null);
-
     }
 
     private void facebookTokenInit() {
@@ -192,6 +209,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.e("GoogleApiClient Error: ",connectionResult.getErrorMessage());
+    }
+
+
+    @Override
+    public void onGooglePlacesLoaded(ArrayList<MyPlace> places) {
+        for (MyPlace place:places){
+            Log.v("Place Name: ", String.valueOf(place.getName()));
+        }
+
     }
 }
 class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
